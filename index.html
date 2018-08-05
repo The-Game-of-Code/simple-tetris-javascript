@@ -36,6 +36,7 @@
       for (let i = 0; i < gameBoard.height; ++i)
         gameBoard.blocks.push(new Array(gameBoard.width).fill(0));
       resetTetromino(tetromino);
+      if (!localStorage.highscore) localStorage.highscore = 0;
       updateScoreDisplay();
     }
 
@@ -112,6 +113,7 @@
         gameBoard.blocks[tetro.y + block.y][tetro.x + block.x] = 1;
       resetTetromino(tetro);
       score += removeCompletedLines() * 10;
+      localStorage.highscore = Math.max(score, localStorage.highscore);
       updateScoreDisplay();
       timer = maxTimer;
     }
@@ -174,7 +176,7 @@
     }
 
     function updateScoreDisplay() {
-      document.getElementById("score_display").innerHTML = "SCORE: " + score;
+      document.getElementById("score_display").innerHTML = "SCORE:" + score + "&nbsp;&nbsp;HIGHSCORE:" + localStorage.highscore;
     }
     // ****************************
 
