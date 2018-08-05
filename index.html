@@ -11,9 +11,7 @@
   <p id="score_display"></p>
   <canvas id="canvas" width="300" height="600"></canvas>
   <script type="text/javascript">
-    let canvas = document.getElementById("canvas");
-    let context = canvas.getContext("2d");
-
+    let canvas = document.getElementById("canvas"), context = canvas.getContext("2d");
     let score = 0, timer = 0, maxTimer = 120, gameOver = false;
     let gameBoard = { width: 10, height: 20, blocks: [] };
     let tetromino = { x: 0, y: 0, type: 0, blocks: [] };
@@ -30,18 +28,13 @@
     ];
 
     // Size of each block in pixels
-    let blockSize = {
-      width: canvas.width / gameBoard.width,
-      height: canvas.height / gameBoard.height
-    };
+    let blockSize = {  width: canvas.width  / gameBoard.width,
+                      height: canvas.height / gameBoard.height };
 
     function setup() {
       // Fill the `gameBoard.blocks` 2D array with zeros
-      for (let i = 0; i < gameBoard.height; ++i) {
-        let row = new Array(gameBoard.width);
-        row.fill(0);
-        gameBoard.blocks.push(row);
-      }
+      for (let i = 0; i < gameBoard.height; ++i)
+        gameBoard.blocks.push(new Array(gameBoard.width).fill(0));
       resetTetromino(tetromino);
       updateScoreDisplay();
     }
@@ -81,25 +74,15 @@
       if (checkTetrominoCollision(tetro, 0, 0)) gameOver = true; // If there's a collision straight away, then the player lost the game
     }
 
-    function copyTetromino(tetro) {
-      return Object.assign({}, tetro);
-    }
-
     /*
      * direction = 1 for a clockwise rotation
      * direction = -1 for anticlockwise
      */
     function getRotatedTetrominoBlocks(tetro, direction = 1) {
-      if (direction == 0 || tetro.type === 0) // Don't rotate if type is zero, this is the square piece which doesn't need rotating
-        return tetro.blocks;
-
+      if (direction == 0 || tetro.type === 0) return tetro.blocks; // Don't rotate if type is zero, this is the square piece which doesn't need rotating
       let newBlocks = [];
-      for (let block of tetro.blocks) {
-        newBlocks.push({
-          x: -block.y * direction,
-          y:  block.x * direction
-        });
-      }
+      for (let block of tetro.blocks)
+        newBlocks.push({ x: -block.y * direction, y: block.x * direction });
       return newBlocks;
     }
 
@@ -117,9 +100,7 @@
     }
 
     function advanceTetromino(tetro) {
-      // Try to move the tetromino down, if we can't then place it on the board and get a new one
-      if (moveTetromino(tetro, 0, 1) === false)
-        placeTetromino(tetro);
+      if (moveTetromino(tetro, 0, 1) === false) placeTetromino(tetro); // Try to move the tetromino down, if we can't then place it on the board and get a new one
     }
 
     /*
@@ -127,14 +108,10 @@
      * Removes completed lines from the board, updates the score and creates the next tetromino
      */
     function placeTetromino(tetro) {
-      for (let block of tetro.blocks) {
-        let blockX = tetro.x + block.x;
-        let blockY = tetro.y + block.y;
-        gameBoard.blocks[blockY][blockX] = 1;
-      }
+      for (let block of tetro.blocks)
+        gameBoard.blocks[tetro.y + block.y][tetro.x + block.x] = 1;
       resetTetromino(tetro);
-      let completedLineCount = removeCompletedLines();
-      score += completedLineCount * 10;
+      score += removeCompletedLines() * 10;
       updateScoreDisplay();
       timer = maxTimer;
     }
@@ -178,15 +155,12 @@
     // ****************************
     function drawTetromino(tetro, isPreview = false) {
       context.fillStyle = isPreview ? "#FFFFFF33" : "#FFFFFF";
-      for (let block of tetro.blocks) {
-        let blockX = tetro.x + block.x;
-        let blockY = tetro.y + block.y;
-        context.fillRect(blockX * blockSize.width, blockY * blockSize.height, blockSize.width, blockSize.height);
-      }
+      for (let block of tetro.blocks)
+        context.fillRect((tetro.x + block.x) * blockSize.width, (tetro.y + block.y) * blockSize.height, blockSize.width, blockSize.height);
     }
 
     function drawPreviewTetromino(tetro) {
-      let previewTetromino = copyTetromino(tetro);
+      let previewTetromino = Object.assign({}, tetro);
       while (moveTetromino(previewTetromino, 0, 1));
       drawTetromino(previewTetromino, true);
     }
@@ -213,7 +187,6 @@
         case 32: dropTetromino(tetromino); break;        // SPACEBAR
       }
     })
-
     setup();
     draw(); // Start the draw loop
   </script>
