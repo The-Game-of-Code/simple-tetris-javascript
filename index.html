@@ -180,11 +180,11 @@
 
     document.addEventListener("keydown", function(ev) {
       switch (ev.keyCode) {
-        case 37: moveTetromino(tetromino, -1, 0); break;   // LEFT ARROW
-        case 39: moveTetromino(tetromino,  1, 0); break;   // RIGHT ARROW
-        case 40: advanceTetromino(tetromino); break;     // DOWN ARROW
+        case 37: moveTetromino(tetromino, -1, 0);   break; // LEFT ARROW
+        case 39: moveTetromino(tetromino,  1, 0);   break; // RIGHT ARROW
+        case 40: advanceTetromino(tetromino);       break; // DOWN ARROW
         case 38: moveTetromino(tetromino, 0, 0, 1); break; // UP ARROW
-        case 32: dropTetromino(tetromino); break;        // SPACEBAR
+        case 32: dropTetromino(tetromino);          break; // SPACEBAR
       }
     })
     setup();
