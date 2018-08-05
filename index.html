@@ -12,7 +12,7 @@
   <canvas id="canvas" width="300" height="600"></canvas>
   <script type="text/javascript">
     let canvas = document.getElementById("canvas"), context = canvas.getContext("2d");
-    let score = 0, timer = 120, maxTimer = 120, gameOver = false;
+    let score = 0, timer = 120, maxTimer = 120, gameOver = false, paused = false;
     let gameBoard = { width: 10, height: 20, blocks: [] };
     let tetromino = { x: 0, y: 0, type: 0, blocks: [] };
     let colors = ["#ffff00", "#ff00ff", "#00ffff", "#ff8800", "#0000ff", "#ff0000", "#00ff00"];
@@ -44,24 +44,23 @@
     function draw() {
       context.fillStyle = "#333333";
       context.fillRect(0, 0, canvas.width, canvas.height); // Clear the canvas with a background color
-      if (--timer < 0) {
+      if (!gameOver && !paused && --timer < 0) {
         advanceTetromino(tetromino);
         timer = maxTimer;
       }
       drawBoard();
       drawPreviewTetromino(tetromino);
       drawTetromino(tetromino);
-      if (gameOver) {
+      if (gameOver || paused) {
         context.fillStyle = "#00000088";
         context.fillRect(0, 0, canvas.width, canvas.height);
         context.fillStyle = "#FFFFFF";
         context.font = "46px Monospace";
         context.textAlign = "center";
         context.textBaseline = "middle";
-        context.fillText("GAME OVER!", canvas.width * .5, canvas.height * .5);
-      } else {
-        window.requestAnimationFrame(draw); // Continue the draw loop for another frame (at the refresh rate of the monitor)
+        context.fillText(paused ? "PAUSED" : "GAME OVER!", canvas.width * .5, canvas.height * .5);
       }
+      if (!gameOver) window.requestAnimationFrame(draw); // Continue the draw loop for another frame (at the refresh rate of the monitor)
     }
 
     // ****************************
@@ -193,6 +192,7 @@
         case 40: advanceTetromino(tetromino);       break; // DOWN ARROW
         case 38: moveTetromino(tetromino, 0, 0, 1); break; // UP ARROW
         case 32: dropTetromino(tetromino);          break; // SPACEBAR
+        case 80: paused = !paused;                  break; // P
       }
     })
     setup();
