@@ -49,6 +49,7 @@
         timer = maxTimer;
       }
       drawBoard();
+      drawPreviewTetromino(tetromino);
       drawTetromino(tetromino);
       if (gameOver) {
         context.fillStyle = "#00000088";
@@ -59,7 +60,6 @@
         context.textBaseline = "middle";
         context.fillText("GAME OVER!", canvas.width * .5, canvas.height * .5);
       } else {
-        drawPreviewTetromino(tetromino);
         window.requestAnimationFrame(draw); // Continue the draw loop for another frame (at the refresh rate of the monitor)
       }
     }
