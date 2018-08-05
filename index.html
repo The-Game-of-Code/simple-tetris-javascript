@@ -15,7 +15,8 @@
     let score = 0, timer = 120, maxTimer = 120, gameOver = false;
     let gameBoard = { width: 10, height: 20, blocks: [] };
     let tetromino = { x: 0, y: 0, type: 0, blocks: [] };
-
+    let colors = ["#ffff00", "#ff00ff", "#00ffff", "#ff8800", "#0000ff", "#ff0000", "#00ff00"];
+    
     // Offsets for each block (Relative to the center of the tetromino)
     let tetrominoDefinitions = [
       [{ x:  0, y: 0 }, { x:  1, y: 0 }, { x:  0, y: 1 }, { x:  1, y: 1 }], // Square piece (we don't rotate this piece so we put it in index 0, pieceType 0 does not get rotated)
@@ -111,7 +112,7 @@
      */
     function placeTetromino(tetro) {
       for (let block of tetro.blocks)
-        gameBoard.blocks[tetro.y + block.y][tetro.x + block.x] = 1;
+        gameBoard.blocks[tetro.y + block.y][tetro.x + block.x] = tetro.type + 1;
       resetTetromino(tetro);
       score += removeCompletedLines() * 10;
       localStorage.highscore = Math.max(score, localStorage.highscore);
@@ -157,7 +158,7 @@
     // Drawing functions
     // ****************************
     function drawTetromino(tetro, isPreview = false) {
-      context.fillStyle = isPreview ? "#FFFFFF33" : "#FFFFFF";
+      context.fillStyle = isPreview ? "#FFFFFF33" : colors[tetro.type];
       for (let block of tetro.blocks)
         context.fillRect((tetro.x + block.x) * blockSize.width, (tetro.y + block.y) * blockSize.height, blockSize.width, blockSize.height);
     }
@@ -169,11 +170,15 @@
     }
 
     function drawBoard() {
-      context.fillStyle = "#FFFFFF";
-      for (let y = 0; y < gameBoard.height; ++y)
-        for (let x = 0; x < gameBoard.height; ++x)
-          if (gameBoard.blocks[y][x])
+      for (let y = 0; y < gameBoard.height; ++y) {
+        for (let x = 0; x < gameBoard.height; ++x) {
+          let val = gameBoard.blocks[y][x];
+          if (val) {
+            context.fillStyle = colors[val - 1];
             context.fillRect(x * blockSize.width, y * blockSize.height, blockSize.width, blockSize.height);
+          }
+        }
+      }
     }
 
     function updateScoreDisplay() {
