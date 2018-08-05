@@ -12,7 +12,7 @@
   <canvas id="canvas" width="300" height="600"></canvas>
   <script type="text/javascript">
     let canvas = document.getElementById("canvas"), context = canvas.getContext("2d");
-    let score = 0, timer = 0, maxTimer = 120, gameOver = false;
+    let score = 0, timer = 120, maxTimer = 120, gameOver = false;
     let gameBoard = { width: 10, height: 20, blocks: [] };
     let tetromino = { x: 0, y: 0, type: 0, blocks: [] };
 
@@ -67,11 +67,12 @@
     // Tetromino functions
     // ****************************
     function resetTetromino(tetro) {
-      // Center the tetromino at the top
-      tetro.x = Math.ceil(gameBoard.width / 2);
-      tetro.y = 0;
+      tetro.x = Math.ceil(gameBoard.width / 2); // Center the tetromino at the top
+      tetro.y = 1;
       tetro.type = Math.floor(Math.random() * tetrominoDefinitions.length);
       tetro.blocks = tetrominoDefinitions[tetro.type].slice(); // We slice to make a copy of the array, when we rotate the piece we don't want to modify the pieceDefinitions
+      for (let i = Math.floor(Math.random() * 4); i--;) tetro.blocks = getRotatedTetrominoBlocks(tetro, 1); // Rotate it 0 to 3 times
+      moveTetromino(tetro, 0, -1); // Move it up if possible so it's flush with the top of the screen
       if (checkTetrominoCollision(tetro, 0, 0)) gameOver = true; // If there's a collision straight away, then the player lost the game
     }
 
